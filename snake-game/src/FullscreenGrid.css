@@ -1,0 +1,18 @@
+.fullscreen-grid {
+    display: grid;
+    grid-template-columns: repeat(100, 1vw); /* Each column is 1vw wide */
+    grid-template-rows: repeat(100, 1vh);    /* Each row is 1vh high */
+    height: 100vh;
+    width: 100vw;
+    background-color: lightgray;
+  }
+  
+  .grid-row {
+    display: flex;
+  }
+  
+  .grid-cell {
+    border: 1px solid gray;
+    box-sizing: border-box;
+  }
+  
