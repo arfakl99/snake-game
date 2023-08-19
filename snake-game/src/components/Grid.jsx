@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
 import React from "react";
 import "../../src/index.css";
+import { AiFillApple } from "react-icons/ai";
+import { FaBeer } from "react-icons/fa";
 
 import bgimg from "../assets/images/snake.jpg";
 import snake from "../assets/images/snake2.jpg";
+import Node from "postcss/lib/node";
 
 const Grid = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [foodposition, setFoodposition] = useState({ x: 10, y: 10 });
   const [direction, setDirection] = useState("right");
   const [score, setScore] = useState(0);
+  const [isBlinking, setIsBlinking] = useState(false);
   // const [secondposition, setSecondposition] = useState({ x: 0, y: 0 });
   // const [thirdposition, setThirdposition] = useState({ x: 0, y: 0 });
   // const [fourthposition, setFourthposition] = useState({ x: 0, y: 0 });
   const initialSnakePosition = [
     { x: 0, y: 0 },
     { x: 0, y: 0 },
-
   ];
 
   const updateFoodAndScore = () => {};
@@ -63,6 +66,24 @@ const Grid = () => {
     }
   }, [position, foodposition]);
 
+  // useEffect(() => {
+  //   if (score > 0) {
+  //     setIsBlinking(true);
+  //     setTimeout(() => {
+  //       setIsBlinking(false);
+  //     }, 1000);
+  //   }
+  // }, [score]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsBlinking((prevIsBlinking) => !prevIsBlinking);
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   useEffect(() => {
     interval = setInterval(() => {
       if (direction === "right") {
@@ -84,10 +105,9 @@ const Grid = () => {
         });
       }
       if (direction === "up") {
-        
-        e.key === "ArrowUp" || e.key === "ArrowDown"
-          ? e.preventDefault()
-          : null;
+        // e.key === "ArrowUp" || e.key === "ArrowDown"
+        //   ? e.preventDefault()
+        //   : null;
 
         setPosition((prevPosition) => {
           let newX = prevPosition.x;
@@ -105,7 +125,7 @@ const Grid = () => {
           if (newY > 420) newY = newY - 420;
           return { x: newX, y: newY };
         });
-        if(position.x === snakeposition.x && position.y === snakeposition.y){
+        if (position.x === snakeposition.x && position.y === snakeposition.y) {
           clearInterval(interval);
           alert("Game Over");
         }
@@ -146,7 +166,7 @@ const Grid = () => {
           width: "100%",
           height: "100%",
           //   backgroundImage: "url('bgimg')",
-          backgroundImage: `url(${snake})`,
+          backgroundImage: `url(${bgimg})`,
 
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
@@ -184,8 +204,6 @@ const Grid = () => {
             justifyContent: "center",
             alignItems: "center",
             marginLeft: "30%",
-
-
           }}
         >
           {/* {
@@ -215,21 +233,70 @@ const Grid = () => {
                 left: item.x,
                 width: "8px",
                 height: "8px",
-                backgroundColor: "black",
+                backgroundColor: "green", // Change the snake color
+                borderRadius: "50%",
               }}
             ></div>
           ))}
 
+          {/* { score > 2 && (
+            <div>
+              <div
+              style={{
+                position: "absolute",
+                top:"50px",
+                left: "50px",
+                width: "18px",
+                height: "18px",
+                
+              }}
+            ></div>
+            </div>
+            
+          )} */}
+
+        
+         
+          {score > 2  && score % 3 === 0 && (
+            <div
+            className={`blinking-box ${isBlinking ? "blink" : ""}`}
+
+              style={{
+                position: "absolute",
+                top:foodposition.y,
+                left: foodposition.x,
+                width: "18px",
+                height: "18px",
+                backgroundColor: "green",
+                borderRadius: "50%",
+              }}
+            ></div>
+
+          )}
+
+{/* {score > 2  && score % 3 === 0 && ( */}
           <div
+            className={`blinking-box ${isBlinking ? "blink" : ""}`}
             style={{
               position: "absolute",
               top: foodposition.y,
               left: foodposition.x,
               width: "8px",
               height: "8px",
-              backgroundColor: "black",
+              backgroundColor: "green",
+              borderRadius: "50%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
-          ></div>
+          >
+            <AiFillApple
+              size={50}
+              style={{ width: "24px" }}
+              className="text-green-700"
+            />
+          </div>
+          {/* )} */}
         </div>
       </div>
     </>
