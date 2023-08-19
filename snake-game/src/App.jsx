@@ -14,7 +14,6 @@ function App() {
   return (
     <>
       <div>
-        <h1>Snake Game</h1>
         <Grid />
         
       </div>
