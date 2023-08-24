@@ -4,16 +4,23 @@ import "../../src/index.css";
 import { AiFillApple } from "react-icons/ai";
 import { FaBeer } from "react-icons/fa";
 
+import ArrowKeysReact from "arrow-keys-react";
+
 import bgimg from "../assets/images/snake.jpg";
 import snake from "../assets/images/snake2.jpg";
 import Node from "postcss/lib/node";
 
 const Grid = () => {
+
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [foodposition, setFoodposition] = useState({ x: 10, y: 10 });
   const [direction, setDirection] = useState("right");
   const [score, setScore] = useState(0);
   const [isBlinking, setIsBlinking] = useState(false);
+  const [showdiv, setShowdiv] = useState(false);
+  const [showdiv2, setShowdiv2] = useState(false);
+  const [level, setLevel] = useState(1);
+  const [bigfoodposition, setBigfoodposition] = useState({ x: 50, y: 30 });
   // const [secondposition, setSecondposition] = useState({ x: 0, y: 0 });
   // const [thirdposition, setThirdposition] = useState({ x: 0, y: 0 });
   // const [fourthposition, setFourthposition] = useState({ x: 0, y: 0 });
@@ -38,6 +45,14 @@ const Grid = () => {
     });
   }, [position]);
 
+  
+
+   
+    
+  
+
+
+
   // useEffect(() => {
   //   if (snakeposition[0].x === snakeposition[1].x && snakeposition[0].y === snakeposition[1].y) {
   //     clearInterval(interval);
@@ -46,13 +61,14 @@ const Grid = () => {
   // }, [snakeposition]);
 
   useEffect(() => {
+    
     if (position.x === foodposition.x && position.y === foodposition.y) {
       setFoodposition({
         x: Math.floor(Math.floor(Math.random() * 520) / 10) * 10,
         y: Math.floor(Math.floor(Math.random() * 420) / 10) * 10,
       });
       setScore(score + 1);
-      debugger;
+      
       setSnakeposition((prevSnakeposition) => {
         const newSnakeposition = [...prevSnakeposition];
         newSnakeposition.push({
@@ -139,25 +155,148 @@ const Grid = () => {
 
   // useEffect(() => console.log("foodposition", foodposition), [foodposition]);
 
-  const handelupdate = (e) => {
-    clearInterval(interval);
-    console.log(e.key);
-    if (e.key === "ArrowRight") {
-      setDirection("right");
+  // const handelupdate = (e) => {
+  //   clearInterval(interval);
+  //   console.log(e.key);
+  //   if (e.key === "ArrowRight") {
+  //     setDirection("right");
+  //   }
+  //   if (e.key === "ArrowLeft") {
+  //     setDirection("left");
+  //   }
+  //   if (e.key === "ArrowUp") {
+  //     setDirection("up");
+  //   }
+  //   if (e.key === "ArrowDown") {
+  //     setDirection("down");
+  //   }
+  // };
+
+  useEffect(() => {
+    const keydownHandler = (e) => {
+      switch (e.key) {
+        case "ArrowUp":
+         
+
+          if (direction === "down" ) return;
+          
+          setDirection("up");
+          break;
+        case "ArrowDown":
+          if (direction === "up" ) return;
+          setDirection("down");
+          break;
+        case "ArrowLeft":
+          if (direction === "right" ) return;
+          setDirection("left");
+          break;
+        case "ArrowRight":
+          if (direction === "left") return;
+          setDirection("right");
+          break;
+        default:
+          break;
+      }
+    };
+    window.addEventListener("keydown", keydownHandler);
+    return () => {
+      window.removeEventListener("keydown", keydownHandler);
+    };
+  }, [ direction]);
+
+
+  useEffect(() => { 
+    if (score>2 && score % 3 === 0) {
+      setShowdiv(true);
+      
+      setTimeout(() => {
+        setShowdiv(false);
+      }, 12000);
     }
-    if (e.key === "ArrowLeft") {
-      setDirection("left");
+    if(score>6){
+      setShowdiv2(true);
     }
-    if (e.key === "ArrowUp") {
-      setDirection("up");
+
+    if (score>2 && score % 3 === 0) {
+      setLevel(level + 1);
     }
-    if (e.key === "ArrowDown") {
-      setDirection("down");
+
+    if( position.x === bigfoodposition.x && position.y === bigfoodposition.y ){
+      setScore(score + 5);
+      setBigfoodposition({
+        
+        x: Math.floor(Math.floor(Math.random() * 520) / 10) * 10,
+        y: Math.floor(Math.floor(Math.random() * 420) / 10) * 10,
+      });
+
+      setSnakeposition((prevSnakeposition) => {
+        const newSnakeposition = [...prevSnakeposition];
+        newSnakeposition.push({
+          x: bigfoodposition.x,
+          y: bigfoodposition.y,
+        });
+        
+        return newSnakeposition;
+      }
+      );
+
     }
-  };
+  
+    // snakeposition.map((item) => {
+    //   if (snakeposition[0].x === item.x && snakeposition[0].y === item.y) {
+    //     clearInterval(interval);
+    //     alert("Game Over");
+    //   }
+    // });
+
+    // for (let i = 2; i < snakeposition.length; i++) {
+    //   if (
+    //     snakeposition[0].x === snakeposition[i].x &&
+    //     snakeposition[0].y === snakeposition[i].y
+    //   ) {
+    //     clearInterval(interval);
+    //     alert("Game Over");
+    //     break;
+    //   }
+    // }
+
+    console.log("snakeposition[0]", snakeposition[0]);
+    console.log("snakeposition{1}", snakeposition[1]);
+    console.log("snakeposition{2}", snakeposition[2]);
+    console.log("snakeposition{3}", snakeposition[3]);
+    console.log("snakeposition{4}", snakeposition[4]);
+    console.log("snakeposition{5}", snakeposition[5]);
+    console.log("snakeposition{6}", snakeposition[6]);
+    console.log("snakeposition{7}", snakeposition[7]);
+
+    
+    
+  }, [score, bigfoodposition, position, snakeposition]);
+
+  useEffect(() => {
+    for (let i = 2; i < snakeposition.length; i++) {
+      if (
+        snakeposition[0].x === snakeposition[i].x &&
+        snakeposition[0].y === snakeposition[i].y
+      ) {
+        clearInterval(interval);
+        alert("Game Over");
+        break;
+      }
+    }
+  }, [position  , snakeposition]);
+
 
   return (
     <>
+    <div style={
+      {
+        backgroundColor:"white",
+        height:"100vh",
+        width:"100vw",
+
+      }
+    }>
       <div
         style={{
           display: "flex",
@@ -166,7 +305,8 @@ const Grid = () => {
           width: "100%",
           height: "100%",
           //   backgroundImage: "url('bgimg')",
-          backgroundImage: `url(${bgimg})`,
+          // backgroundImage: `url(${bgimg})`,
+          // backgroundColor:"rgba(0,0,0,0.5)",
 
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
@@ -178,10 +318,61 @@ const Grid = () => {
           Food Position : {foodposition.x} , {foodposition.y}
         </div>
         <div>
-          Snake Position : {position.x} , {position.y}
+          Snake head Position : {position.x} , {position.y}
         </div>
+       
+        {/* <div>
+          Snake Position : {snakeposition[2].x} , {snakeposition[2].y}
+        </div> */}
+        {/* <div>
+          Snake Position : {snakeposition[3].x} , {snakeposition[3].y}
+        </div>
+        <div>
+          Snake Position : {snakeposition[4].x} , {snakeposition[4].y}
+        </div>
+        <div>
+          Snake Position : {snakeposition[5].x} , {snakeposition[5].y}
+        </div>
+        <div>
+          Snake Position : {snakeposition[6].x} , {snakeposition[6].y}
+        </div>
+        <div>
+          Snake Position : {snakeposition[7].x} , {snakeposition[7].y}
+        </div>
+         */}
 
-        <input
+<div style={
+  {
+    
+    backgroundColor:"white",
+    height:"70vh",
+    width:"20vw",
+    position:"absolute",
+    top:"10px",
+    right:"10px",
+    zIndex:"1",
+    opacity:"0.8",
+    color:"black",
+    
+    // backgroundColor:"rgba(0,0,0,0.5)",
+  }
+}>
+{
+          snakeposition.map((item) => (
+            <div>
+              snake position : {item.x} , {item.y}
+              
+
+            </div>
+          ))
+
+         }
+  </div>
+         
+
+        
+
+        {/* <input
           style={{
             width: "10%",
             height: "10%",
@@ -192,7 +383,8 @@ const Grid = () => {
             handelupdate(e);
           }}
           autoFocus
-        />
+        /> */}
+       
 
         <div
           style={{
@@ -206,27 +398,11 @@ const Grid = () => {
             marginLeft: "30%",
           }}
         >
-          {/* {
-    snakeposition.map((snakeposition, index) => {
-      return (
-        <div
-          key={index}
-          style={{
-            position: "absolute",
-            top: snakeposition.y,
-            left: snakeposition.x,
-            width: "8px",
-            height: "8px",
-            backgroundColor: "black",
-          }}
-        ></div>
-      );
-    })
-    
-  } */}
+      
 
           {snakeposition.map((item) => (
             <div
+             
               style={{
                 position: "absolute",
                 top: item.y,
@@ -239,42 +415,101 @@ const Grid = () => {
             ></div>
           ))}
 
-          {/* { score > 2 && (
-            <div>
-              <div
-              style={{
-                position: "absolute",
-                top:"50px",
-                left: "50px",
-                width: "18px",
-                height: "18px",
-                
-              }}
-            ></div>
-            </div>
+         
+
+        
+          {showdiv && (
+             <div
+             className={`blinking-box ${isBlinking ? "blink" : ""}`}
+ 
+               style={{
+                 position: "absolute",
+                 // i want to show this div at random position along with food
+                 top: bigfoodposition.y,
+                  left: bigfoodposition.x,
+ 
+                 width: "18px",
+                 height: "18px",
+                 backgroundColor: "green",
+                 borderRadius: "50%",
+               }}
+             ></div>
+          )}
+
+
+          {/* {showdiv2 && (
             
           )} */}
 
-        
+          {
+            showdiv2 && (
+            <section>
+<div  style={
+            {
+              position: "absolute",
+              top: 40,
+              left: 40,
+              width: "480px",
+              height: "5px",
+              backgroundColor: "#b8b817",
+
+            }
+          }>
+
+          </div>
+            
+          <div  style={
+            {
+              position: "absolute",
+              top: 60,
+              right: 40,
+              width: "480px",
+              height: "5px",
+              backgroundColor: "#b8b817",
+
+            }
+          }>
+
+          </div>
+          <div  style={
+            {
+              position: "absolute",
+              top: 239,
+              right: 140,
+              rotate:"45deg",
+              width: "445px",
+              height: "5px",
+              backgroundColor: "#b8b817",
+
+            }
+          }>
+
+          </div>
+            
+          <div  style={
+            {
+              position: "absolute",
+              top: 246,
+              right:-21,
+              rotate:"133deg",
+              width: "445px",
+              height: "5px",
+              backgroundColor: "#b8b817",
+
+            }
+          }>
+
+          </div>
+            </section>
+              
+            )
+
+          }
+
+          
+            
+
          
-          {score > 2  && score % 3 === 0 && (
-            <div
-            className={`blinking-box ${isBlinking ? "blink" : ""}`}
-
-              style={{
-                position: "absolute",
-                top:foodposition.y,
-                left: foodposition.x,
-                width: "18px",
-                height: "18px",
-                backgroundColor: "green",
-                borderRadius: "50%",
-              }}
-            ></div>
-
-          )}
-
-{/* {score > 2  && score % 3 === 0 && ( */}
           <div
             className={`blinking-box ${isBlinking ? "blink" : ""}`}
             style={{
@@ -298,6 +533,7 @@ const Grid = () => {
           </div>
           {/* )} */}
         </div>
+      </div>
       </div>
     </>
   );
