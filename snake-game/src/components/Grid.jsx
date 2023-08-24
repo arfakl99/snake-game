@@ -4,6 +4,8 @@ import "../../src/index.css";
 import { AiFillApple } from "react-icons/ai";
 import { FaBeer } from "react-icons/fa";
 
+import {BsFire} from "react-icons/bs";
+
 import ArrowKeysReact from "arrow-keys-react";
 
 import bgimg from "../assets/images/snake.jpg";
@@ -19,6 +21,7 @@ const Grid = () => {
   const [isBlinking, setIsBlinking] = useState(false);
   const [showdiv, setShowdiv] = useState(false);
   const [showdiv2, setShowdiv2] = useState(false);
+  const[showFire, setShowFire] = useState(false);
   const [level, setLevel] = useState(1);
   const [bigfoodposition, setBigfoodposition] = useState({ x: 50, y: 30 });
   // const [secondposition, setSecondposition] = useState({ x: 0, y: 0 });
@@ -29,9 +32,23 @@ const Grid = () => {
     { x: 0, y: 0 },
   ];
 
-  const updateFoodAndScore = () => {};
+  const initialFirePosition = [
+    { x: 30, y: 120 },
+    { x: 60, y: 110 },
+    { x: 110, y: 250 },
+    { x: 330, y: 220 },
+    { x: 60, y: 100 },
+    { x: 330, y: 50 },
+    { x: 250, y: 0 },
+  ];
+
 
   const [snakeposition, setSnakeposition] = useState(initialSnakePosition);
+  const [fireposition, setFireposition] = useState(initialFirePosition);
+  
+
+  const updateFoodAndScore = () => {};
+
 
   let interval = null;
   useEffect(() => {
@@ -211,18 +228,25 @@ const Grid = () => {
       
       setTimeout(() => {
         setShowdiv(false);
-      }, 12000);
+      }, 5000);
     }
     if(score>6){
       setShowdiv2(true);
     }
 
+    if(score>10){
+      setShowFire(true);
+    }
+
+
     if (score>2 && score % 3 === 0) {
       setLevel(level + 1);
     }
 
-    if( position.x === bigfoodposition.x && position.y === bigfoodposition.y ){
+    if( position.x === bigfoodposition.x && position.y === bigfoodposition.y )
+    {
       setScore(score + 5);
+      
       setBigfoodposition({
         
         x: Math.floor(Math.floor(Math.random() * 520) / 10) * 10,
@@ -271,20 +295,20 @@ const Grid = () => {
 
     
     
-  }, [score, bigfoodposition, position, snakeposition]);
+  }, [score]);
 
-  useEffect(() => {
-    for (let i = 2; i < snakeposition.length; i++) {
-      if (
-        snakeposition[0].x === snakeposition[i].x &&
-        snakeposition[0].y === snakeposition[i].y
-      ) {
-        clearInterval(interval);
-        alert("Game Over");
-        break;
-      }
-    }
-  }, [position  , snakeposition]);
+  // useEffect(() => {
+  //   for (let i = 2; i < snakeposition.length; i++) {
+  //     if (
+  //       snakeposition[0].x === snakeposition[i].x &&
+  //       snakeposition[0].y === snakeposition[i].y
+  //     ) {
+  //       clearInterval(interval);
+  //       alert("Game Over");
+  //       break;
+  //     }
+  //   }
+  // }, [position  , snakeposition]);
 
 
   return (
@@ -505,6 +529,40 @@ const Grid = () => {
             )
 
           }
+
+
+          {
+            showFire && (
+              <section>
+                {
+                  fireposition.map((item) => (
+                    <div
+                    style={
+                      {
+                        position: "absolute",
+                        top: item.y,
+                        left: item.x,
+                        
+                        
+                        
+                      }
+                    }
+                    >
+                      <BsFire style={
+                        {
+                          color:"red",
+                          width:"20px",
+                          height:"20px",
+
+                        }
+                      }/>
+                    </div>
+                  ))
+                }
+              </section>
+            )
+          }
+
 
           
             
